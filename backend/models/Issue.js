@@ -13,14 +13,21 @@ const issueSchema = new mongoose.Schema(
         required: true,
     },
     issueDate: {
-        type: Date,
+        type: String,
         required: true,
-        default : Date.now()
     },
     returnDate: {
-        type: Date,
+        type: String,
         required: true,
     },
+    fine: {
+      type: Number,
+      required: true,
+      default : 0
+  },
+  remarks : {
+    type : String
+  }
   }
 );
 

@@ -2,6 +2,7 @@ const User = require("../models/User");
 const Book = require("../models/Book");
 const Details = require("../models/Details");
 const Membership = require("../models/Membership");
+const Issue = require("../models/Issue");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -313,6 +314,15 @@ exports.addMembership = async (req, res) => {
 
     const user = await User.findOne({email : email});
 
+    const exMembership = await Membership.findOne({userId : user._id});
+
+    if(exMembership){
+      return res.status(400).json({
+        success: false,
+        message: "membership already present",
+      });
+    }
+
     const endDate = new Date();
     endDate.setMonth(endDate.getMonth() + months);
 
@@ -397,7 +407,7 @@ exports.updateMembership = async (req, res) => {
 //book details
 exports.booksForHome = async (req, res) => {
   try {
-      const data = await Book.find({}).limit(5);
+      const data = await Book.find({}).limit(5).sort({_id: -1});
 
       return res.status(200).json({
         success: true,
@@ -412,3 +422,307 @@ exports.booksForHome = async (req, res) => {
     });
   }
 };
+
+//all books name
+exports.allBook = async (req, res) => {
+  try {
+    
+      const data  = await Book.find({}).select("_id name author").exec();
+
+      return res.status(200).json({
+        success: true,
+        message: "data fetched",
+        data
+      });
+
+    }catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Process failed.",
+      error: err.message,
+    });
+  }
+};
+
+//book available
+exports.bookbyid =async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    //validation
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing requirements.",
+      });
+    }
+
+    const data  = await Book.findOne({_id : id});
+
+      return res.status(200).json({
+        success: true,
+        message: "datafetched",
+        data 
+      });
+    }catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Process failed.",
+      error: err.message,
+    });
+  }
+};
+exports.bookbyname =async (req, res) => {
+  try {
+    const { name } = req.body;
+
+    //validation
+    if (!name) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing requirements.",
+      });
+    }
+
+    const data  = await Book.findOne({name : name});
+
+      return res.status(200).json({
+        success: true,
+        message: "data fetched",
+        data 
+      });
+
+
+    }catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Process failed.",
+      error: err.message,
+    });
+  }
+};
+
+exports.issueBook = async (req, res) => {
+  try {
+    const { id , issueDate, returnDate ,remarks,userId } = req.body;
+
+    //validation
+    
+    if (!id || !issueDate || !returnDate || !userId || !remarks) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing requirements.",
+      });
+    }
+
+    const mem = await Membership.findOne({userId : userId});
+
+    if(!mem){
+      return res.status(400).json({
+        success: false,
+        message: "First take a membership",
+      });
+    }
+
+    if(Date.now() > mem.endDate){
+      return res.status(400).json({
+        success: false,
+        message: "Membership expired",
+      });
+    }
+
+  
+    const book  = await Book.findOne({_id : id});
+
+    if(book.quantity < 0 ){
+      return res.status(400).json({
+        success: false,
+        message: "Book unavailable",
+      });
+    }
+
+    await Issue.create({
+      userId : userId,
+      bookId : book._id,
+      issueDate : issueDate,
+      returnDate : returnDate,
+      remarks
+    })
+
+    await Book.findOneAndUpdate({_id : book._id},{
+      quantity : book.quantity-1
+    })
+
+    return res.status(200).json({
+        success: true,
+        message: "book isssued", 
+      });
+    }catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Process failed.",
+      error: err.message,
+    });
+  }
+};
+
+
+//get user's issued books
+exports.userIssueBook = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    //validation
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing requirements.",
+      });
+    }
+
+    const data = await Issue.find({userId : userId}).populate('bookId').exec();
+
+    return res.status(200).json({
+      success: false,
+      message: "data fetched",
+      data : data
+    });
+    
+    }catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Process failed.",
+      error: err.message,
+    });
+  }
+};
+
+//return book
+exports.returnBook = async (req, res) => {
+  try {
+    const { id ,returnDate } = req.body;
+
+    //validation
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing requirements.",
+      });
+    }
+
+    const issue = await Issue.findOne({id});
+
+    //validation
+
+
+    if(true){
+
+      await Issue.findOneAndDelete({id});
+
+      return res.status(200).json({
+        success: true,
+        message: "Book returned",
+      });
+    }else{
+      return res.status(500).json({
+        success: false,
+        message: "pay fine first",
+      });
+    }
+
+
+    }catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Process failed.",
+      error: err.message,
+    });
+  }
+};
+
+
+exports.calcFine =  async (req, res) => {
+  try {
+    const { id  } = req.body;
+
+    //validation
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing requirements.",
+      });
+    }
+
+    const issue = await Issue.findOne({id});
+
+    //calc
+    const total = 0;
+
+    return res.status(200).json({
+      success : true,
+      message : "fine calculated",
+      data : total
+    })
+
+
+    }catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Process failed.",
+      error: err.message,
+    });
+  }
+};
+
+exports.payfine =  async (req, res) => {
+  try {
+    const { id , issueDate, returnDate ,remarks,userId } = req.body;
+
+    //validation
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing requirements.",
+      });
+    }
+
+    const mem = await Membership.findOne({userId : userId});
+
+    if(!mem){
+      return res.status(400).json({
+        success: false,
+        message: "First take a membership",
+      });
+    }
+
+    if(Date.now() > mem.endDate){
+      return res.status(400).json({
+        success: false,
+        message: "Membership expired",
+      });
+    }
+
+  
+    const book  = await Book.findOne({id});
+
+    await Issue.create({
+      userId : userId,
+      bookId : book._id,
+      issueDate : issueDate,
+      returnDate : returnDate
+    })
+
+    return res.status(200).json({
+        success: true,
+        message: "book isssued",
+        data 
+      });
+    }catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Process failed.",
+      error: err.message,
+    });
+  }
+};
+

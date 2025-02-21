@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 //import controllers
-const {signup,login,addUserDetails,updateUserDetails,addBook,updateBook,addMembership,updateMembership,booksForHome} =  require("../controllers/auth")
+const {signup,login,addUserDetails,updateUserDetails,addBook,updateBook,addMembership,updateMembership,booksForHome,allBook,bookbyid,bookbyname,issueBook} =  require("../controllers/auth")
 
 //sign up
 router.post("/signup",signup);
@@ -31,5 +31,16 @@ router.post("/update/membership",updateMembership);
 //book for home
 router.get("/book/home",booksForHome);
 
+//get all books
+router.get("/book/all",allBook);
+
+//get book by id
+router.post("/book/id",bookbyid);
+
+//get book by id
+router.post("/book/name",bookbyname);
+
+//get book by id
+router.post("/book/issue",issueBook);
 
 module.exports = router;

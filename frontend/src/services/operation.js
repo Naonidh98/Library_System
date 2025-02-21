@@ -1,5 +1,5 @@
 import { apiConnector } from "./apiConnector";
-import { authApi } from "./api";
+import { authApi ,bookApi } from "./api";
 import { setUser, setToken } from "../slices/userSlice";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
@@ -90,4 +90,315 @@ export function signup(data, navigate, setLoading) {
       toast.dismiss(toastId);
       setLoading(false);
     };
+}
+
+//home books
+export function bookHome(setData, setLoading) {
+  return async (dispatch) => {
+    setLoading(true);
+    const toastId = toast.loading("Loading....");
+    try {
+      const response = await apiConnector("GET", bookApi.home);
+
+      //response
+      setData(response.data.data);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    setLoading(false);
+  };
+}
+
+//add membership
+export function addMembership(data) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+      const response = await apiConnector("POST", bookApi.addMembership, data);
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}
+
+//update mem
+export function updateMembership(data) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+      const response = await apiConnector("POST", bookApi.updateMembership, data);
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}
+
+//add books
+export function addBooks(data) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+      const response = await apiConnector("POST", bookApi.bookAdd, data);
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}
+
+//update books
+export function updateBooks(data) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+      const response = await apiConnector("POST", bookApi.bookUpdate, data);
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}
+
+//add details
+export function addDetails(data) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+      const response = await apiConnector("POST", bookApi.userDetails, data);
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}
+
+export function updateDetails(data) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+      const response = await apiConnector("POST", bookApi.userDetailsUpdate, data);
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}
+
+//all books
+export function allBookDetails(setData) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+      const response = await apiConnector("GET", bookApi.allBooks );
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      setData(response.data.data);
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}
+
+//book by id
+export function bookById(data,setData) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+      const response = await apiConnector("POST", bookApi.bookbyid ,data);
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      setData(response.data.data);
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}
+
+export function bookByName(data,setData) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+
+      console.log(data);
+      
+
+      const response = await apiConnector("POST", bookApi.bookbyname ,data);
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      setData(response.data.data);
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}
+
+//book issue
+export function bookIssue(data) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+
+      console.log(data);
+      
+
+      const response = await apiConnector("POST", bookApi.bookIssue ,data);
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+  
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
 }

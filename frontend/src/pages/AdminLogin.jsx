@@ -42,9 +42,9 @@ const AdminLogin = () => {
       </div>
 
       <div className="w-full flex justify-evenly">
-      <button onClick={()=>{setEmail(''); setPassword('');}} className="m-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" >
+      <div onClick={()=>{setEmail(''); setPassword('');}} className="m-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" >
       Cancel
-      </button>
+      </div>
       <button className="m-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" >
       Login
       </button>

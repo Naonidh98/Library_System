@@ -4,3 +4,18 @@ export const authApi = {
   login: BASE_URL + "/login",
   signup: BASE_URL + "/signup",
 };
+
+export const bookApi  = {
+  home : BASE_URL + "/book/home",
+  addMembership : BASE_URL + "/add/membership",
+  updateMembership : BASE_URL + "/update/membership",
+  bookAdd : BASE_URL + "/book/add",
+  bookUpdate : BASE_URL + "/book/update",
+  userDetails : BASE_URL + "/user/details/add",
+  userDetailsUpdate : BASE_URL + "/user/details/update",
+  allBooks : BASE_URL + "/book/all",
+  bookbyid : BASE_URL + "/book/id",
+  bookbyname : BASE_URL + "/book/name",
+  bookIssue : BASE_URL + "/book/issue"
+}
+

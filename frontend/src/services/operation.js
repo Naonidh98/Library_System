@@ -402,3 +402,135 @@ export function bookIssue(data) {
     
   };
 }
+
+//user issued books
+export function userIssuedBook(data,setData) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+
+      console.log(data);
+      
+
+      const response = await apiConnector("POST", bookApi.userIssueBook ,data);
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      setData(response.data.data);
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}
+
+//return book
+export function userIssuedBookReturn(data) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+
+      console.log(data);
+      
+
+      const response = await apiConnector("POST", bookApi.bookReturn ,data);
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      //success message
+      toast.success(response.data.message);
+      
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}
+
+//calc fine
+export function calculateFine(data,setData) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+
+      console.log(data);
+      
+
+      const response = await apiConnector("POST", bookApi.calcFine ,data);
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      setData(response.data.data);
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}
+
+
+//pay fine
+export function payFine(data) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+
+      console.log(data);
+      
+
+      const response = await apiConnector("POST", bookApi.payFine ,data);
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      //setData(response.data.data);
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}

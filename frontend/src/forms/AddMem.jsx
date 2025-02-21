@@ -1,18 +1,21 @@
 import React, {useState} from "react";
 import { addMembership } from "../services/operation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const AddMem = ()=>{
 
     const [email,setEmail] = useState('');
     const [month,setMonths] = useState('6');
     const dispatch = useDispatch();
+    const {token} = useSelector((state)=>state.user);
+
 
     function submitHandler(e){
         e.preventDefault();
        
 
         const data= {
+            token,
             email : email,
             months : Number(month)
         }  

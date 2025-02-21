@@ -1,6 +1,7 @@
 import React ,{useState} from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch , useSelector } from "react-redux";
 import { updateDetails } from "../services/operation";
+
 
 const UpdateDetails = ()=>{
 
@@ -9,12 +10,15 @@ const UpdateDetails = ()=>{
     const [address,setAddress] = useState('');
     
     const dispatch = useDispatch();
+    const {token} = useSelector((state)=>state.user);
+
     
         function submitHandler(e){
             e.preventDefault();
            
     
             const data= {
+                token,
                 email,
             }  
             if(contact){data.contact = contact}

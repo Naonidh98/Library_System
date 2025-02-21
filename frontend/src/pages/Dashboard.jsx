@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ProductDetails from "../components/ProductDetails";
 import Transaction from "../components/Transaction";
 import Maintainance from "../components/Maintainance";
+import Reports from "../components/Reports";
 import { useSelector , useDispatch } from "react-redux";
 
 const Dashboard = () => {
@@ -48,7 +49,7 @@ const Dashboard = () => {
         </div>
         <div>
           {
-            text==='Reports' && <div> Reports </div>
+            text==='Reports' && <div> <Reports/> </div>
           }
         </div>
 

@@ -1,5 +1,5 @@
 import React ,{useState} from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch ,useSelector } from "react-redux";
 import { updateBooks } from "../services/operation";
 const UpdateBook = ()=>{
 
@@ -12,12 +12,14 @@ const UpdateBook = ()=>{
         const [price,setPrice] = useState('');
         const [serial,setSerial] = useState('');
         const [quantity,setQuantity] = useState('');
+
+        const {token} = useSelector((state)=>state.user);
         
             function submitHandler(e){
                 e.preventDefault();
                
         
-                let data = {};
+                let data = {token};
 
 if (id) data.id = id;
 if (name) data.name = name;

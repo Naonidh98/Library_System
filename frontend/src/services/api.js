@@ -20,6 +20,9 @@ export const bookApi  = {
   userIssueBook : BASE_URL + "/user/issue/book",
   bookReturn  : BASE_URL + "/user/issue/return",
   calcFine : BASE_URL + "/fine/calculate",
-  payFine  : BASE_URL + "/fine/pay"  
+  payFine  : BASE_URL + "/fine/pay"  ,
+  masterBooks : BASE_URL + "/master/book/all",
+  masterMembership : BASE_URL + "/master/membership/all",
+  masterIssues : BASE_URL + "/master/issues/all"
 }
 

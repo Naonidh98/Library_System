@@ -4,7 +4,6 @@ import { setUser, setToken } from "../slices/userSlice";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
-
 //login
 export function login(data, setLoading, navigate) {
     return async (dispatch) => {
@@ -523,6 +522,94 @@ export function payFine(data) {
       }
 
       //setData(response.data.data);
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}
+
+//master books
+//all books
+export function masterBooksDetails(setData) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+      const response = await apiConnector("GET", bookApi.masterBooks );
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      setData(response.data.data);
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}
+
+//all memberships
+export function masterMembershipDetails(setData) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+      const response = await apiConnector("GET", bookApi.masterMembership );
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      setData(response.data.data);
+
+      //success message
+      toast.success(response.data.message);
+    } catch (error) {
+      console.log("API ERROR............", error);
+      toast.error(error?.response?.data?.message);
+    }
+    toast.dismiss(toastId);
+    
+  };
+}
+
+//all master issues
+export function masterIssuesDetails(setData) {
+  return async (dispatch) => {
+   
+    const toastId = toast.loading("Loading....");
+    try {
+      const response = await apiConnector("GET", bookApi.masterIssues );
+
+      //response
+      console.log(response);
+
+      //failure
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      setData(response.data.data);
 
       //success message
       toast.success(response.data.message);

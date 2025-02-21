@@ -1,6 +1,6 @@
 import React, {useState ,useEffect} from "react";
 import {useDispatch} from "react-redux";
-import { allBookDetails , bookByName } from "../services/operation";
+import { masterBooksDetails , bookByName } from "../services/operation";
 
 const BookAvail = ({setAvail}) =>{
 
@@ -13,7 +13,7 @@ const BookAvail = ({setAvail}) =>{
     const dispatch = useDispatch();
 
     useEffect(()=>{
-        dispatch(allBookDetails(setData))
+        dispatch(masterBooksDetails(setData))
     },[])
 
 

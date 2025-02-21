@@ -1,5 +1,5 @@
 import React ,{useState} from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addBooks } from "../services/operation";
 
 const AddBook = ()=>{
@@ -12,18 +12,18 @@ const AddBook = ()=>{
     const [quantity,setQuantity] = useState('');
 
     const dispatch = useDispatch();
+    const {token} = useSelector((state)=>state.user);
     
         function submitHandler(e){
             e.preventDefault();
-           
-    
             const data= {
                 name : name,
                 author,
                 category,
                 price,
                 serialNo : serial,
-                quantity : Number(quantity)
+                quantity : Number(quantity),
+                token
             }  
     
             dispatch(addBooks(data));

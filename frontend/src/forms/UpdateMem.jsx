@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch ,useSelector} from "react-redux";
 import { updateMembership } from "../services/operation";
 
 const UpdateMem = ()=>{
@@ -8,12 +8,14 @@ const UpdateMem = ()=>{
     const [month,setMonths] = useState('');
     const [remove,setRemove] = useState('');
     const dispatch = useDispatch();
-    
+    const {token} = useSelector((state)=>state.user);
+
         function submitHandler(e){
             e.preventDefault();
            
     
             const data= {
+                token,
                 email : email,
                 months : Number(month),
                 remove : remove === 'yes' ? true : false

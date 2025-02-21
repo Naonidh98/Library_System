@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 //import controllers
-const {signup,login,addUserDetails,updateUserDetails,addBook,updateBook,addMembership,updateMembership,booksForHome,allBook,bookbyid,bookbyname,issueBook} =  require("../controllers/auth")
+const {signup,login,addUserDetails,updateUserDetails,addBook,updateBook,addMembership,updateMembership,booksForHome,allBook,bookbyid,bookbyname,issueBook,userIssueBook,returnBook,calcFine,payfine} =  require("../controllers/auth")
 
 //sign up
 router.post("/signup",signup);
@@ -42,5 +42,17 @@ router.post("/book/name",bookbyname);
 
 //get book by id
 router.post("/book/issue",issueBook);
+
+//user's issued books
+router.post("/user/issue/book",userIssueBook);
+
+//return issued books
+router.post("/user/issue/return",returnBook);
+
+//calc fine
+router.post("/fine/calculate",calcFine);
+
+//pay fine
+router.post("/fine/pay",payfine);
 
 module.exports = router;

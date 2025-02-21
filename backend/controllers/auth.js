@@ -583,7 +583,7 @@ exports.userIssueBook = async (req, res) => {
     const data = await Issue.find({userId : userId}).populate('bookId').exec();
 
     return res.status(200).json({
-      success: false,
+      success: true,
       message: "data fetched",
       data : data
     });
@@ -600,7 +600,7 @@ exports.userIssueBook = async (req, res) => {
 //return book
 exports.returnBook = async (req, res) => {
   try {
-    const { id ,returnDate } = req.body;
+    const { id  } = req.body;
 
     //validation
     if (!id) {
@@ -610,11 +610,18 @@ exports.returnBook = async (req, res) => {
       });
     }
 
-    const issue = await Issue.findOne({id});
+    const issue = await Issue.findOne({_id : id});
 
     //validation
+    if(!issue){
+      return res.status(400).json({
+        success: false,
+        message: "Invalid book",
+      });
+    }
 
 
+    /*
     if(true){
 
       await Issue.findOneAndDelete({id});
@@ -629,8 +636,50 @@ exports.returnBook = async (req, res) => {
         message: "pay fine first",
       });
     }
+    */
 
+  
+    function getDateDifference(date1, date2) {
+      // Convert strings to Date objects
+      let d1 = new Date(date1);
+      let d2 = new Date(date2);
+  
+      // Calculate the difference in milliseconds
+      let diffInTime = d2 - d1; // Remove Math.abs() to keep sign
+  
+      // Convert milliseconds to days
+      let diffInDays = diffInTime / (1000 * 60 * 60 * 24);
+  
+      return diffInDays;
+  }
+  
+  const today = new Date(Date.now()).toISOString().split('T')[0];
+    
 
+  const diff  = (getDateDifference(today,issue.returnDate));
+  
+
+  if(diff < 0){
+    return res.status(500).json({
+      success: false,
+      message: "Pay fine first.",
+    });
+  }
+    
+  else{
+
+    await Issue.findOneAndDelete({_id : id});
+
+    const book = await Book.findOne({_id : issue.bookId});
+    await Book.findOneAndUpdate({_id : issue.bookId},{
+      quantity : book.quantity +1 
+    });
+
+    return res.status(200).json({
+      success : true,
+      message : "Book submitted successfully"
+    })
+  }
     }catch (err) {
     return res.status(500).json({
       success: false,
@@ -653,10 +702,51 @@ exports.calcFine =  async (req, res) => {
       });
     }
 
-    const issue = await Issue.findOne({id});
+    const issue = await Issue.findOne({_id : id});
+
+    //validation
+    if(!issue){
+      return res.status(400).json({
+        success: false,
+        message: "Invalid book",
+      });
+    }
+
+    function getDateDifference(date1, date2) {
+      // Convert strings to Date objects
+      let d1 = new Date(date1);
+      let d2 = new Date(date2);
+  
+      // Calculate the difference in milliseconds
+      let diffInTime = d2 - d1; // Remove Math.abs() to keep sign
+  
+      // Convert milliseconds to days
+      let diffInDays = diffInTime / (1000 * 60 * 60 * 24);
+  
+      return diffInDays;
+    }
+  
+  const today = new Date(Date.now()).toISOString().split('T')[0];
+    
+
+  const diff  = (getDateDifference(today,issue.returnDate));
+
+
+    if(diff >= 0){
+      return res.status(200).json({
+        success : true,
+        message : "fine calculated",
+        data : 0
+      })
+  
+    }
 
     //calc
-    const total = 0;
+    const total = -1 *(diff);
+
+    await Issue.findOneAndUpdate({_id : id},{
+      fine : total
+    })
 
     return res.status(200).json({
       success : true,
@@ -676,47 +766,59 @@ exports.calcFine =  async (req, res) => {
 
 exports.payfine =  async (req, res) => {
   try {
-    const { id , issueDate, returnDate ,remarks,userId } = req.body;
+    const { id , pay } = req.body;
 
     //validation
-    if (!id) {
+    if (!id || !pay) {
       return res.status(400).json({
         success: false,
         message: "Missing requirements.",
       });
     }
 
-    const mem = await Membership.findOne({userId : userId});
+    const issue = await Issue.findOne({_id : id});
 
-    if(!mem){
+    //validation
+    if(!issue){
       return res.status(400).json({
         success: false,
-        message: "First take a membership",
+        message: "Invalid book",
       });
     }
 
-    if(Date.now() > mem.endDate){
+    if(issue.fine !== Number(pay)){
       return res.status(400).json({
         success: false,
-        message: "Membership expired",
+        message: "Invalid amount",
       });
     }
 
-  
-    const book  = await Book.findOne({id});
+    if (issue.fine === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Fine already paid",
+      });
+    }
 
-    await Issue.create({
-      userId : userId,
-      bookId : book._id,
-      issueDate : issueDate,
-      returnDate : returnDate
+    function addDaysToDate(dateString, days) {
+      let date = new Date(dateString); // Convert to Date object
+      date.setDate(date.getDate() + days); // Add days
+      return date.toISOString().split('T')[0]; // Format back to yyyy-mm-dd
+    }
+
+    const newDate = addDaysToDate(issue.returnDate, 7);
+    
+
+    await Issue.findOneAndUpdate({_id : id},{
+      returnDate : newDate,
+      fine : 0
     })
-
+    
     return res.status(200).json({
         success: true,
-        message: "book isssued",
-        data 
+        message :"Fine payed and the deadline extend to 7 days", 
       });
+    
     }catch (err) {
     return res.status(500).json({
       success: false,

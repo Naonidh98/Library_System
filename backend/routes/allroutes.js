@@ -2,7 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 //import controllers
-const {signup,login,addUserDetails,updateUserDetails,addBook,updateBook,addMembership,updateMembership,booksForHome,allBook,bookbyid,bookbyname,issueBook,userIssueBook,returnBook,calcFine,payfine} =  require("../controllers/auth")
+const {signup,login,addUserDetails,updateUserDetails,addBook,updateBook,addMembership,updateMembership,booksForHome,allBook,bookbyid,bookbyname,issueBook,userIssueBook,returnBook,calcFine,payfine,MasterBooks,allMemberships,allIssuesDetails} =  require("../controllers/auth")
+
+//import middlewares
+const {auth,isAdmin,isUser} = require("../middlewares/auth")
 
 //sign up
 router.post("/signup",signup);
@@ -11,22 +14,22 @@ router.post("/signup",signup);
 router.post("/login",login);
 
 //add user details
-router.post("/user/details/add",addUserDetails);
+router.post("/user/details/add",auth,isAdmin,addUserDetails);
 
 //update user details
-router.post("/user/details/update",updateUserDetails);
+router.post("/user/details/update",auth,isAdmin,updateUserDetails);
 
 //add book 
-router.post("/book/add",addBook);
+router.post("/book/add",auth,isAdmin,addBook);
 
 //update book
-router.post("/book/update",updateBook);
+router.post("/book/update",auth,isAdmin,updateBook);
 
 //add mem 
-router.post("/add/membership",addMembership);
+router.post("/add/membership",auth,isAdmin,addMembership);
 
 //update mem
-router.post("/update/membership",updateMembership);
+router.post("/update/membership",auth,isAdmin,updateMembership);
 
 //book for home
 router.get("/book/home",booksForHome);
@@ -54,5 +57,14 @@ router.post("/fine/calculate",calcFine);
 
 //pay fine
 router.post("/fine/pay",payfine);
+
+//master books
+router.get("/master/book/all",MasterBooks);
+
+//all membership
+router.get("/master/membership/all",allMemberships);
+
+//all issues
+router.get("/master/issues/all",allIssuesDetails);
 
 module.exports = router;

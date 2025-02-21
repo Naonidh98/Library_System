@@ -427,7 +427,7 @@ exports.booksForHome = async (req, res) => {
 exports.allBook = async (req, res) => {
   try {
     
-      const data  = await Book.find({}).select("_id name author").exec();
+      const data  = await Book.find({quantity  : {$ne : 0}}).select("_id name author").exec();
 
       return res.status(200).json({
         success: true,
@@ -828,3 +828,67 @@ exports.payfine =  async (req, res) => {
   }
 };
 
+//all books details
+exports.MasterBooks = async (req, res) => {
+  try {
+    
+      const data  = await Book.find({}).exec();
+
+      return res.status(200).json({
+        success: true,
+        message: "data fetched",
+        data
+      });
+
+    }catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Process failed.",
+      error: err.message,
+    });
+  }
+};
+
+// all memberships
+exports.allMemberships = async (req, res) => {
+  try {
+    
+      const data  = await Membership.find({}).populate({
+        path : "userId",
+        populate : {path : "details"}
+      }).exec();
+
+      return res.status(200).json({
+        success: true,
+        message: "data fetched",
+        data
+      });
+
+    }catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Process failed.",
+      error: err.message,
+    });
+  }
+};
+
+//all axtive issues
+exports.allIssuesDetails = async (req, res) => {
+  try {
+      const data  = await Issue.find({}).populate("userId").populate("bookId").exec();
+
+      return res.status(200).json({
+        success: true,
+        message: "data fetched",
+        data
+      });
+
+    }catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Process failed.",
+      error: err.message,
+    });
+  }
+};
